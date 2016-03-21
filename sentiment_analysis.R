@@ -45,14 +45,11 @@ neg_all<- c(neg, neg_finance)
 #BB <- read.csv("beigebook_summary.csv", sep=",")
 BB <- read.csv("BB_96_2013.csv", sep=",")
 
-
+library(reshape)
 colnames(BB)
 # [1] "year""month""text"
 cast(BB, year ~ month, length)
-# year   1 2 3 4 6 7 8 9 10 11
-# 1 2011 1 0 1 1 1 1 0 1  1  1
-# 2 2012 1 1 0 1 1 1 1 0  1  1
-# 3 2013 1 0 1 1 1 1 0 0  0  0
+
 
 bad <- is.na(BB)   # create a new object "bad" that will hold missing data, in this case from BB.
 BB[bad] 		# return all missing elements(
@@ -124,7 +121,7 @@ length(stnd.stopwords)
 bb.stopwords<- c(stnd.stopwords, "district", "districts", "reported", "noted", "city", "cited", 	
                  "activity", "contacts", "chicago", "dallas", "kansas", "san", "richmond", "francisco", 	
                  "cleveland", "atlanta", "sales", "boston", "york", "philadelphia", "minneapolis", 
-                 "louis", 	"services","year", "levels", " louis")
+                 "louis", "services","year", "levels", " louis")
 
 # bb.stopwords is a combination of stnd.stopwords and our custom list above. You can certainly imagine another scenario where these city names are kept and words associated with city names are examined. For this analysis, however, they were dropped. 
 
@@ -182,7 +179,7 @@ findFreqTerms(bb_tdm, lowfreq = 60)
 
 # Let us add some of these positive words:
 pos.words<- c(pos_all, "spend", "buy", "earn", "hike", "increase", "increases", 	
-              "development", "expansion", "raise", "surge", "add", "added", "advanced", "advances", 	
+              "development", "expansion", "raise", "surged", "add", "added", "advanced", "advances", 	
               "boom", "boosted", "boosting", "waxed",  "upbeat", "surge")
 
 # And add the negative ones:
@@ -199,15 +196,14 @@ any(pos.words == "made")
 # [1] FALSE
 # FALSE is returned. Meaning, "made" is not already in our lexicon.
 
-# interestingly, demand is associated with "weak"
-findAssocs(bb_tdm, "demand", 0.50)
+# interestingly, demand is associated with "texas" and "oil"
+findAssocs(bb_tdm, "demand", 0.40)
 
-# "increased" is associated with "materials", "hiring" and "building"
-findAssocs(bb_tdm, "increased", 0.50)
+# "katrina" is associated with "evacuees", "new orleans", "hurricane"
+findAssocs(bb_tdm, "katrina", 0.30)
 
-
-# "growth" is associated with "slowdown" and "reductions"
-findAssocs(bb_tdm, "growth", 0.5)
+# "growth" is associated with "revenue" but also "slower" and "contracted"
+findAssocs(bb_tdm, "growth", 0.2)
 
 # Remove sparse terms from term document matrix with
 # a numeric value of .95; representing the maximal allowed sparsity.
@@ -222,7 +218,7 @@ colnames(BBdf.rsums)
 # [1] "word" "freq"
 
 # Install RColorBrewer for coloring our wordcloud
-# install.packages("RColorBrewer")
+install.packages("RColorBrewer")
 library(RColorBrewer)
 
 # RColorBrewer creates nice looking color palettes 
