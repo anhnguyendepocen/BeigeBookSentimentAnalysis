@@ -3,3 +3,8 @@ Beige Book Sentiment Analysis Case Study for Text Mining Workshop
 
 Based off of the book Social Media Mining with R; see https://socialmediaminingr.com/
 
+# Instructions
+
+Click the "Download Zip" button on the right hand side. Save the file to your local directory and extract the files.
+
+Open the extracted folder and open the R files sentiment.R and sentiment_analysis.R in R Studio. Run the file sentiment.R; note, if you have not previously installed the `plyr` packages, run the command `install.packages("plyr")` to install the package.
