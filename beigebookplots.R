@@ -1,6 +1,11 @@
 ################
 ## data prep ###
 ################
+install.packages("Rmisc")
+library(Rmisc)
+
+BB.sentiment$location <- BB$location
+
 dallas <- subset(BB.sentiment, location=="Dallas")
 stlouis <- subset(BB.sentiment, location=="St. Louis")
 atlanta <- subset(BB.sentiment, location=="Atlanta")
@@ -17,7 +22,6 @@ phili <- subset(BB.sentiment, location=="Philadelphia")
 ################
 ## four plots (dallas, stlouis, ny, atlanta)
 ################
-png(filename="/Users/heimannrichard/Google Drive/Spatial Analysis UMBC/RCode/casestudy1/dsna.png")
 # bb.boxplot.dallas 
 bb.boxplot.dallas <- ggplot(dallas, aes(x=dallas$year, y=dallas$centered, group=dallas$year))
 bb.boxplot.dallas <- bb.boxplot.dallas + geom_boxplot(outlier.colour = "black", outlier.shape = 16,  outlier.size = 2) + ylim(-70, 50)
@@ -40,7 +44,6 @@ dev.off()
 ################
 ## four plots (richmond, sf, kc, minneapolis)
 ################
-png(filename="/Users/heimannrichard/Google Drive/Spatial Analysis UMBC/RCode/casestudy1/rskm.png")
 # bb.boxplot.richmond 
 bb.boxplot.richmond <- ggplot(richmond, aes(x=richmond$year, y=richmond$centered, group=richmond$year))
 bb.boxplot.richmond <- bb.boxplot.richmond + geom_boxplot(outlier.colour = "black", outlier.shape = 16,  outlier.size = 2) + ylim(-70, 50)
@@ -63,7 +66,6 @@ dev.off()
 ################
 ## four plots (chicago, boston, cleveland, phili)
 ################
-png(filename="/Users/heimannrichard/Google Drive/Spatial Analysis UMBC/RCode/casestudy1/cbcp.png")
 # bb.boxplot.chicago 
 bb.boxplot.chicago <- ggplot(chicago, aes(x=chicago$year, y=chicago$centered, group=chicago$year))
 bb.boxplot.chicago <- bb.boxplot.chicago + geom_boxplot(outlier.colour = "black", outlier.shape = 16,  outlier.size = 2) + ylim(-70, 50)
