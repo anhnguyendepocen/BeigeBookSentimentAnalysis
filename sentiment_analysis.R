@@ -11,7 +11,7 @@
 
 # Run sentiment.R function
 
-setwd("~/Documents/Work/MosaicWorkshop/SentimentBeigeBook/")
+setwd("//filer01/rwesslen/My Documents/BeigeBookSentimentAnalysis-master")
 
 # Place files into working directory 
 
