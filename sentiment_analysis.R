@@ -1,19 +1,14 @@
-###################################
-# Social Media Mining: Case Studies
-###################################
-# Case Study # 1: Supervised Social Media Mining: Lexicon Based Sentiment
-###################################
-# begin code
-###################################
 
 # The Beige Book (http://www.federalreserve.gov/monetarypolicy/beigebook)
 # The https_function, located on the authors' GitHub account 
+
+## Step 1: Load set up Working Directory ----------------------------------------------
 
 # Run sentiment.R function
 
 setwd("//filer01/rwesslen/My Documents/BeigeBookSentimentAnalysis-master")
 
-# Place files into working directory 
+## Step 2: Import in Dictionaries -----------------------------------------------------
 
 # import positive lexicons from your local directory defined in earlier step
 pos<- scan(file.path('positive-words.txt'), what = 'character', 
@@ -36,6 +31,8 @@ neg_finance<- scan(file.path('LoughranMcDonald_neg.csv'),
 # combine both files into one
 neg_all<- c(neg, neg_finance)
 
+## Step 3: Import Corpus/Text --------------------------------------------------------
+
 # Import Beige Book data from Github and create a new data frame. 
 # *Important* You have three options when ingesting Beige Book data. 
 # beigebook_summary.csv is three years of data (2011 - 2013) 
@@ -57,6 +54,8 @@ BB[bad] 		# return all missing elements(
 # returns zero missing elements. Alternately, adding !before "bad"				
 # will return all good elements.
 
+## Step 4: Pre-Processing  --------------------------------------------------------
+
 # regular expressions help us clean our data
 # gsub is a function of the R package grep and replaces content that matches are search
 # gsub substitutes punctuation (must be surrounded by another set of square brackets    
@@ -77,7 +76,7 @@ colnames(BB.text) <- c("text", "year", "date")
 colnames(BB.text)
 # [1] "text" "year" "date"
 
-
+## Step 5: Create Corpus & Tokenize  -----------------------------------------------------
 
 # We can perform much of the same cleaning of the data using the tm package, 
 # but our data then needs to be in a corpus, whereas regular expressions work on character vectors. 
@@ -104,9 +103,11 @@ inspect(bb_corpus)
 # as we show in the Naive Bayes and IRT examples. An example of stemming for the words 
 # stemming and stems would be stem - effectively dropping the -ing and -s suffixes, respectively. 
 
+## Step 6: Stemming & Stop Words -----------------------------------------------------
+
 # stemming can be done easily
 # we just need the SnowBall C package, in addition to tm
-install.packages("SnowballC")
+# install.packages("SnowballC")
 library(SnowballC)
 bb.text_stm<- tm_map(bb_corpus, stemDocument)
 
@@ -128,7 +129,7 @@ bb.stopwords<- c(stnd.stopwords, "district", "districts", "reported", "noted", "
 length(bb.stopwords)
 # [1] 597
 
-### Change these to normal cleaning ###
+## Step 7: Term-Document Matrix -----------------------------------------------------
 
 # additional cleaning to eliminate words that lack discriminatory power. 
 # bb.tf will be used as a control for the creation of our term-document matrix.
@@ -157,6 +158,8 @@ bb_tdm
 class(bb_tdm)
 # [1] "TermDocumentMatrix""simple_triplet_matrix"
 
+## Step 8: Explore Common Words -----------------------------------------------------
+
 # We can get all terms n = 1515
 Terms(bb_tdm)
 
@@ -177,6 +180,8 @@ findFreqTerms(bb_tdm, lowfreq = 60)
 # [11] "mixed""prices""remained""report""reports"
 # [16] "steady""strong"
 
+## Step 9: Add more pos/neg words ----------------------------------------------------
+
 # Let us add some of these positive words:
 pos.words<- c(pos_all, "spend", "buy", "earn", "hike", "increase", "increases", 	
               "development", "expansion", "raise", "surged", "add", "added", "advanced", "advances", 	
@@ -195,6 +200,8 @@ any(pos.words == "strong")
 any(pos.words == "made")
 # [1] FALSE
 # FALSE is returned. Meaning, "made" is not already in our lexicon.
+
+## Step 10: Word Associations -------------------------------------------------
 
 # interestingly, demand is associated with "texas" and "oil"
 findAssocs(bb_tdm, "demand", 0.40)
@@ -217,8 +224,10 @@ BBdf.rsums <- data.frame(word=names(BB.rsums), freq=BB.rsums)
 colnames(BBdf.rsums)
 # [1] "word" "freq"
 
+## Step 11: Word Cloud ----------------------------------------------------------
+
 # Install RColorBrewer for coloring our wordcloud
-install.packages("RColorBrewer")
+# install.packages("RColorBrewer")
 library(RColorBrewer)
 
 # RColorBrewer creates nice looking color palettes 
@@ -234,6 +243,7 @@ library(wordcloud)
 bb_wordcloud <- wordcloud(BBdf.rsums$word, BBdf.rsums$freq, scale=c(7,.2), min.freq=4, max.words=200, 
                           random.order=FALSE, colors=palette)
 
+## Step 12: Sentiment Scoring ------------------------------------------------------
 
 # using our score.sentiment function on BB.text$text against pos.words and neg.words
 # progress = 'text' is useful for monitoring scoring of large documents
@@ -254,6 +264,8 @@ colnames(BB.sentiment)
 # and shift our midpoint value from 33 to zero. The new empirically adjusted center may be interpreted 
 # as an empirically neutral midpoint. The histograms below show both raw scores and centered scores.
 
+## Step 13: Normalizing Scores --------------------------------------------------------
+
 # calculate mean from raw score
 BB.sentiment$mean <- mean(BB.sentiment$score)
 # calculate sum and store it in BB.sum
@@ -272,14 +284,16 @@ sum(BB.sentiment$pos)
 sum(BB.sentiment$neg)
 # [1] 13
 
+## Step 14: Score Histograms -----------------------------------------------------------
+
 # we can create a histogram of raw score and centered score to see the impact of mean  # centering
 BB.hist <- hist(BB.sentiment$score, main="Sentiment Histogram", xlab="Score", ylab="Frequency")
 BB.hist <- hist(BB.sentiment$centered, main="Sentiment Histogram", xlab="Score",ylab="Frequency")
 
-# <insert image 1770OS_06_02.png> (Histogram of BB.sentiment$score & BBsentiment$meancenter)
-
 # Some of the upcoming plots will use a package named ggplot2, created by Hadley Wickham. 
 # Though difficult to master, ggplot2 offers some rather elegant and powerful graphing. 
+
+## Step 15: Plot Historical Sentiment--------------------------------------------------
 
 # install and load ggplot2	 
 # install.packages("ggplot2")
@@ -299,3 +313,4 @@ BB.boxplot<- BB.boxplot + xlab("Year") + ylab("Sentiment (Centered)") +
 # draw boxplot
 BB.boxplot
 
+## Step 16: Run beigebookplots.R file----------------------------------------------------
